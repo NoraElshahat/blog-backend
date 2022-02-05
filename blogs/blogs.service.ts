@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { BlogDto } from './dto/blog.dto';
@@ -10,8 +14,14 @@ export class BlogsService {
     @InjectModel(Blog.name) readonly blogModel: Model<BlogDocument>,
   ) {}
 
-  create(createBlogDto: BlogDto): Promise<Blog> {
-    return this.blogModel.create(createBlogDto);
+  async create(createBlogDto: BlogDto): Promise<Blog> {
+    const blog = await new this.blogModel(createBlogDto);
+
+    if (!blog) {
+      throw new BadRequestException('please check Your inputs');
+    }
+
+    return blog.save();
   }
 
   async findAll(): Promise<Blog[]> {
