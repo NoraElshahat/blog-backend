@@ -15,7 +15,7 @@ export class BlogsService {
   ) {}
 
   async create(createBlogDto: BlogDto): Promise<Blog> {
-    return await new this.blogModel(createBlogDto);
+    return await this.blogModel.create(createBlogDto);
   }
 
   async findAll(): Promise<Blog[]> {
